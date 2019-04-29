@@ -3,9 +3,28 @@ const expect = require('expect');
 const { app } = require('./../server')
 const { Todo } = require('./../models/Todo')
 const { User } = require('./../models/User')
-beforeEach((done)=>{
-    Todo.remove({}).then(()=>done())
-})
+const todos = [{
+    text: 'First test todo'
+  }, {
+    text: 'Second test todo'
+  }];
+  
+beforeEach((done) => {
+    Todo.remove({}).then(() => {
+        return Todo.insertMany(todos);
+    }).then(() => done());
+});
+describe('GET /todos', () => {
+    it('Should Get all Todos', (done) => {
+        request(app)
+            .get('/todos')
+            .expect(200)
+            .expect((res) => {
+                console.log(res.body.todos)
+               // expect(res.body.todos.length).toBe(2);
+            }).end(done);
+    });
+});
 describe('POST /todos', () => {
     it('Should create a new Todo', (done) => {
         var text = 'Test todo text';
@@ -21,8 +40,8 @@ describe('POST /todos', () => {
                     return done(err);
                 }
                 Todo.find().then((all) => {
-                    expect(all.length).toBe(1);
-                    expect(all[0].text).toBe(text);
+                    expect(all.length).toBe(3);
+                    expect(all[2].text).toBe(text);
                     done();
                 }).catch((e) => done(e));
             });
@@ -31,15 +50,16 @@ describe('POST /todos', () => {
         request(app)
             .post('/todos')
             .send({})
-            .expect(400)           
+            .expect(400)
             .end((err, resp) => {
                 if (err) {
                     return done(err);
                 }
                 Todo.find().then((all) => {
-                    expect(all.length).toBe(0);               
+                    expect(all.length).toBe(2);
                     done();
                 }).catch((e) => done(e));
             });
     })
 })
+

@@ -1,9 +1,9 @@
 //root of our application
+var express=require('express')
+var bodyParser=require('body-parser');
 var {mongoose}=require('./DB/mongoose')
 var {Todo}=require('./models/Todo')
 var {User}=require('./models/User')
-var express=require('express')
-var bodyParser=require('body-parser');
 var app=new express();
 app.use(bodyParser.json()); // Middleware
 //we can now send JSON to express
