@@ -17,13 +17,14 @@ app.post('/todos',(req,res)=>{
             res.send(doc);
         },(err)=>{
             console.log('unable to save todo object');
-            res.status(404).send(err);
+            res.status(400).send(err);
         })
     console.log(req.body)//body gets stored in the body parser
 })
 app.listen(3000,()=>{
     console.log("connection started")
 })
+module.exports={app}
 // var newTodo=new Todo({text:'Edit This Video'});
 // newTodo.save().then((doc)=>{console.log('save Todo')},(err)=>{console.log(err.message)})
 //  var newUser=new User({email:'esraa@example.com'});
