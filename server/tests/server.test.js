@@ -10,7 +10,7 @@ const todos = [{
   }];
   
 beforeEach((done) => {
-    Todo.remove({}).then(() => {
+    Todo.deleteMany({}).then(() => {
         return Todo.insertMany(todos);
     }).then(() => done());
 });
@@ -20,8 +20,8 @@ describe('GET /todos', () => {
             .get('/todos')
             .expect(200)
             .expect((res) => {
-                console.log(res.body.todos)
-               // expect(res.body.todos.length).toBe(2);
+                
+                expect(res.body.all.length).toBe(2);
             }).end(done);
     });
 });
