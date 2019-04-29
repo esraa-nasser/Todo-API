@@ -21,11 +21,14 @@ app.post('/todos',(req,res)=>{
         })
     console.log(req.body)//body gets stored in the body parser
 })
-app.listen(3000,()=>{
+app.get('/todos',(req,res)=>{
+    Todo.find().then((all)=>{
+        res.send({all});
+    },(err)=>{
+        res.status(400).send({err});
+    })
+})
+app.listen(4000,()=>{
     console.log("connection started")
 })
 module.exports={app}
-// var newTodo=new Todo({text:'Edit This Video'});
-// newTodo.save().then((doc)=>{console.log('save Todo')},(err)=>{console.log(err.message)})
-//  var newUser=new User({email:'esraa@example.com'});
-//  newUser.save().then((doc)=>{console.log('saved User ',doc)},(err)=>{console.log(err)})
