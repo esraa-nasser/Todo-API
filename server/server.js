@@ -1,6 +1,7 @@
 //root of our application
 var express=require('express')
 var bodyParser=require('body-parser');
+const {ObjectID}=require('mongodb')
 var {mongoose}=require('./DB/mongoose')
 var {Todo}=require('./models/Todo')
 var {User}=require('./models/User')
@@ -27,6 +28,21 @@ app.get('/todos',(req,res)=>{
     },(err)=>{
         res.status(400).send({err});
     })
+})
+app.get('/todos/:id',(req,res)=>{
+    var id=req.params.id;
+    if(ObjectID.isValid(id)){
+        Todo.findById(id).then((body)=>{
+            if(body)
+               return res.send(body)
+           else
+           return res.status(404).send({});
+        }).catch((e)=>{res.status(400).send()})
+    }
+    else{
+        res.status(404).send({})
+    }
+   
 })
 app.listen(4000,()=>{
     console.log("connection started")
