@@ -23,6 +23,9 @@ console.log('todos: ',todos)
 })
 
 Todo.findById(id).then((todo)=>{
+    if(!todo){
+        return console.log('No Ids Found')
+    }
     console.log(todo);
 },(err)=>{
     console.log(err);

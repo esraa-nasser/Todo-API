@@ -6,6 +6,7 @@ var {mongoose}=require('./DB/mongoose')
 var {Todo}=require('./models/Todo')
 var {User}=require('./models/User')
 var app=new express();
+const port=process.env.PORT || 4000;
 app.use(bodyParser.json()); // Middleware
 //we can now send JSON to express
 app.post('/todos',(req,res)=>{
@@ -37,14 +38,32 @@ app.get('/todos/:id',(req,res)=>{
                return res.send({todo})
            else
                return res.status(404).send();
-        }).catch((e)=>{res.status(400).send()})
+        }).catch((e)=>{res.status(400).send()})//400 the request is not valid
     }
     else{
+        console.log('not valid')
        return res.status(404).send()
     }
    
 })
-app.listen(4000,()=>{
-    console.log("connection started")
+app.delete('/todos/:id',(req,res)=>{
+    var ID=req.params.id;
+    if(!ObjectID.isValid(ID)){
+        return res.status(404).send()
+    }
+    else{
+        Todo.findByIdAndRemove(D).then((res)=>{
+            if(res){
+            return res.status(200).send({res})
+            }
+            else{
+                return res.status(404).send()
+            }
+        }).catch((e)=>{
+            res.status(400).send()       })
+    }
+})
+app.listen(port,()=>{
+    console.log(`connection started at port: ${port}`)
 })
 module.exports={app}
