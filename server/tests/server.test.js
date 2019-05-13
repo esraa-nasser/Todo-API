@@ -90,3 +90,27 @@ describe('GET /todos/:id', () => {
     })
 
 })
+describe('Delete /todos/:id', () => {
+    it('Should remove a Todo with this _id', (done) => {
+        request(app)
+            .delete(`/todos/${todos[0]._id.toHexString()}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe(todos[0].text);
+            }).end(done)
+    })
+    it('Should return 404 when not exist', (done) => {
+        var hexId=new ObjectID().toHexString();
+        request(app)
+            .get(`/todos/${hexId}`)
+            .expect(404)
+            .end(done)
+    })
+    it('Should return 400 when not Valid ID', (done) => {
+        request(app)
+            .get(`/todos/5cc9afbcbb9ac975787f47e6b`)
+            .expect(404)
+            .end(done)
+    })
+
+})
