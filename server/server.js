@@ -1,3 +1,4 @@
+require('./config/config')
 //root of our application
 const express=require('express')
 const bodyParser=require('body-parser');
@@ -8,7 +9,7 @@ var {Todo}=require('./models/Todo')
 var {User}=require('./models/User')
 
 var app=new express();
-const port=process.env.PORT || 4000;
+const port=process.env.PORT ;
 app.use(bodyParser.json()); // Middleware
 //we can now send JSON to express
 app.post('/todos',(req,res)=>{
