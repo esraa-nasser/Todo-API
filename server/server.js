@@ -1,4 +1,4 @@
-require('./config/config')
+// require('./config/config')
 //root of our application
 const express=require('express')
 const bodyParser=require('body-parser');
@@ -9,8 +9,8 @@ var {Todo}=require('./models/Todo')
 var {User}=require('./models/User')
 
 var app=new express();
-const port=process.env.PORT ;
-app.use(bodyParser.json()); // Middleware
+const port=process.env.PORT ||4000 ;
+// app.use(bodyParser.json()); // Middleware
 //we can now send JSON to express
 app.post('/todos',(req,res)=>{
     var nTodo=new Todo({
@@ -38,7 +38,7 @@ app.get('/todos/:id',(req,res)=>{
     if(ObjectID.isValid(id)){
         Todo.findById(id).then((todo)=>{
             if(todo)
-               return res.send({todo})
+                res.send({todo})
            else
                return res.status(404).send();
         }).catch((e)=>{res.status(400).send()})//400 the request is not valid
@@ -55,9 +55,9 @@ app.delete('/todos/:id',(req,res)=>{
         return res.status(404).send()
     }
     else{
-        Todo.findByIdAndRemove(D).then((res)=>{
+        Todo.findByIdAndRemove(ID).then((res)=>{
             if(res){
-            return res.status(200).send({res})
+             res.send({res})
             }
             else{
                 return res.status(404).send()
@@ -66,7 +66,7 @@ app.delete('/todos/:id',(req,res)=>{
             res.status(400).send()       })
     }
 })
-app.patch('',(req,res)=>{
+app.patch('/todos/:id',(req,res)=>{
     var id =req.params.id;
     //patch is used for updating 
     //if user want to update todo he'll use patch
@@ -75,27 +75,47 @@ app.patch('',(req,res)=>{
     //hst5dm pick 3shan a7ddlo l 7agat elly y2dr yst5dmha w y3mlha update 
     //3mlt require l lodash 3shan a2dr ast5dm pick
     var body=_.pick(req.body,['text','completed'])
-    if(!ObjectID.isValid(ID)){
+    if(!ObjectID.isValid(id)){
         return res.status(404).send()
     }
-    else{
-        if(_.isBoolean(body.completed)&&body.completed===true){
+    
+        if(_.isBoolean(body.completed)&&body.completed){
             body.completedAt=new Data().getTime();
         }else{
             body.completed=false
-            body.completedAt=null;
+            body.completedAt=' ';
         }
         Todo.findByIdAndUpdate(id,{$set:body},{new:true})//new : true de b7dd el behaviour bta3 findoneandupdate l2nha btrg3 l 2dem f na h2olha rg3ely l gded
         .then((todo)=>{
             if(todo){
-               return res.status(200).send(res)
+                res.send(res)
             }
             else{
                return res.status(404).send()
             }
-        }).catch()
-    }
+        }).catch((e)=>{
+            res.status(400).send()
+        })
+    
 })
+//3ayz ab3t l token fl header bta3 l http response 
+        //hdef .header --> dy bta5od two paramters key value pair
+        //l 7aga elly 3ayz adefha wl Qema
+        //lma b2olh x- da m3nah eny msh hst5dm l default header bta3 http l2 na h3ml custom header
+app.post('/users', (req, res) => {
+    console.log('helloooo')
+            var body = _.pick(req.body, ['email', 'password']);
+            var user = new User(body);  
+            user.save().then(() => {
+              return user.generateAuthToken();
+            }).then((token) => {
+              res.header('x-auth', token).send(user);
+            }).catch((e) => {
+              res.status(400).send(e);
+              console.log(e)
+            })
+          });
+          
 app.listen(port,()=>{
     console.log(`connection started at port: ${port}`)
 })

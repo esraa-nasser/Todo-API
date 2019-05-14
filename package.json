@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "test": "export NODE_ENV=test || SET NODE_ENV=test && mocha server/**/*.test.js",
-    "test-watch": "nodemon --exec \"npm test\""
+    "test": "mocha server/**/*.test.js",
+    "test-watch": "nodemon --exec \"npm test\"",
+    "text": "test export NODE_ENV=test || SET NODE_ENV=test && mocha server/**/*.test.js"
   },
   "engines": {
     "node": "11.14.0"
@@ -15,11 +16,14 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
     "install": "^0.12.2",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
     "mongodb": "^3.2.3",
-    "mongoose": "^5.5.4"
+    "mongoose": "^5.5.4",
+    "validator": "^10.11.0"
   },
   "devDependencies": {
     "expect": "^24.7.1",
