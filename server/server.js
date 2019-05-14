@@ -7,10 +7,10 @@ const _=require('lodash')
 var {mongoose}=require('./DB/mongoose')
 var {Todo}=require('./models/Todo')
 var {User}=require('./models/User')
-
+var {authenticate}=require('./middleware/authenticate')
 var app=new express();
 const port=process.env.PORT ||4000 ;
-// app.use(bodyParser.json()); // Middleware
+app.use(bodyParser.json()); // Middleware
 //we can now send JSON to express
 app.post('/todos',(req,res)=>{
     var nTodo=new Todo({
@@ -104,8 +104,9 @@ app.patch('/todos/:id',(req,res)=>{
         //lma b2olh x- da m3nah eny msh hst5dm l default header bta3 http l2 na h3ml custom header
 app.post('/users', (req, res) => {
     console.log('helloooo')
-            var body = _.pick(req.body, ['email', 'password']);
-            var user = new User(body);  
+            var body =req.body;
+            console.log(body)
+            var user = new User({email:body.email,password:body.password});  
             user.save().then(() => {
               return user.generateAuthToken();
             }).then((token) => {
@@ -116,6 +117,9 @@ app.post('/users', (req, res) => {
             })
           });
           
+app.get('/users/me',authenticate,(req,res)=>{
+            res.send(req.user)
+          })
 app.listen(port,()=>{
     console.log(`connection started at port: ${port}`)
 })

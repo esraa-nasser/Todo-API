@@ -6,10 +6,10 @@ const _ = require('lodash');
 var UserSchema = new mongoose.Schema({
     email: {
     type: String,
-    require: true,
+    required: true,
     trim: true,
     minlength: 1,
-    //unique: true,
+    unique: true,
     validate: {
       validator: validator.isEmail,
       message: '{VALUE} is not a valid email'
@@ -23,11 +23,11 @@ var UserSchema = new mongoose.Schema({
   tokens: [{
     access: {
       type: String,
-      require: true
+      required: true
     },
     token: {
       type: String,
-      require: true
+      required: true
     }
   }]
 });
@@ -50,7 +50,21 @@ console.log(token)
     return token;
   });
 };
-
+UserSchema.statics.findByToken=function(token){
+  var User=this;
+  var decoded;
+  try{
+    decoded=jwt.verify(token,'abc123');
+  }catch(e){
+    return new Promise((resolve,reject)=>{ reject()}) // same as return Promise.reject()
+    // ay 7aga hb3tha fl paramters bta3t reject hst5dmha hnak fi catch as e argument
+  }
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+}
 var User = mongoose.model('User', UserSchema);
 
 module.exports = {User}
